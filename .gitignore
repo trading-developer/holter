@@ -1,0 +1,7 @@
+.env
+.venv/
+bp_diary.db
+logs/
+__pycache__/
+*.pyc
+.idea
