@@ -9,6 +9,7 @@ from db import repo
 from keyboards import FEELING_EMOJI, feeling_keyboard
 from services.limits import LimitError, check_limits, day_bounds_utc
 from services.parsing import MEASUREMENT_RE, ParseError, parse_measurement
+from services.stickers import pick_sticker, send_sticker
 
 FEELING = 1
 
@@ -81,6 +82,14 @@ async def feeling_chosen(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"Сегодня записей: {count}/{settings.max_per_day}"
     )
     await query.edit_message_text(text)
+
+    # реакция стикером: набор выбирается по категории давления, плохое самочувствие
+    # сдвигает тон вниз; отсутствие подходящего стикера — штатная ситуация
+    sticker = pick_sticker(m.systolic, m.diastolic, feeling,
+                            exclude=context.user_data.get("last_sticker"))
+    if sticker and await send_sticker(context.bot, update.effective_chat.id, sticker):
+        context.user_data["last_sticker"] = sticker
+
     return ConversationHandler.END
 
 

@@ -24,5 +24,8 @@ class Settings(BaseSettings):
     graph_days: int = 14
     max_reminders_per_user: int = 5
 
+    stickers_enabled: bool = True
+    stickers_file: str = "stickers.json"  # относительный путь — от корня проекта
+
 
 settings = Settings()
