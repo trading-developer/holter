@@ -45,6 +45,7 @@ def feeling_keyboard() -> InlineKeyboardMarkup:
 
 def clear_keyboard() -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup([
+        [InlineKeyboardButton("🗑 За сегодня", callback_data="clr:today")],
         [InlineKeyboardButton("🗑 Старше 30 дней", callback_data="clr:30"),
          InlineKeyboardButton("🗑 Старше 90 дней", callback_data="clr:90")],
         [InlineKeyboardButton("🗑 Удалить всё", callback_data="clr:all"),
@@ -52,9 +53,15 @@ def clear_keyboard() -> InlineKeyboardMarkup:
     ])
 
 
-def clear_confirm_keyboard() -> InlineKeyboardMarkup:
+CLEAR_CONFIRM_LABELS = {
+    "all": "✅ Да, удалить всё",
+    "today": "✅ Да, удалить за сегодня",
+}
+
+
+def clear_confirm_keyboard(action: str = "all") -> InlineKeyboardMarkup:
     return InlineKeyboardMarkup([
-        [InlineKeyboardButton("✅ Да, удалить всё", callback_data="clr:all_yes"),
+        [InlineKeyboardButton(CLEAR_CONFIRM_LABELS[action], callback_data=f"clr:{action}_yes"),
          InlineKeyboardButton("✖️ Отмена", callback_data="clr:cancel")],
     ])
 

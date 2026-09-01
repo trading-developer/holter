@@ -151,6 +151,21 @@ async def delete_older_than(tg_id: int, cutoff_utc: datetime) -> int:
         return n
 
 
+async def delete_between(tg_id: int, start_utc: datetime, end_utc: datetime) -> int:
+    async with SessionLocal() as s:
+        cond = (
+            Measurement.user_id == tg_id,
+            Measurement.created_at >= start_utc,
+            Measurement.created_at <= end_utc,
+        )
+        n = (await s.execute(
+            select(func.count(Measurement.id)).where(*cond)
+        )).scalar_one()
+        await s.execute(delete(Measurement).where(*cond))
+        await s.commit()
+        return n
+
+
 async def delete_all(tg_id: int) -> int:
     async with SessionLocal() as s:
         n = (await s.execute(
